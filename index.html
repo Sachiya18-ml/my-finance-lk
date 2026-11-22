@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102033">
+<title>My Finance LK</title>
+<style>
+:root{--bg:#f3f6fa;--card:#fff;--ink:#172334;--muted:#68778a;--line:#e5ebf2;--navy:#102033;--blue:#316fe8;--green:#16875d;--red:#d84b54;--shadow:0 5px 22px #14253b0d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:var(--navy);color:white;padding:22px 18px 26px;border-radius:0 0 24px 24px}
+.head{max-width:920px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-size:21px;font-weight:800;letter-spacing:.2px}.sub{color:#b8c7d9;font-size:12px;margin-top:4px}
+main{max-width:920px;margin:0 auto;padding:16px 14px 92px}
+.tabs{display:flex;gap:7px;overflow:auto;margin:0 0 16px;padding:2px 0 8px}.tab{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 14px;white-space:nowrap;font-weight:650;color:var(--muted)}.tab.active{background:var(--blue);border-color:var(--blue);color:white}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow);margin-bottom:12px}.label{font-size:12px;color:var(--muted);font-weight:650}.value{font-size:22px;font-weight:800;margin-top:5px;letter-spacing:-.5px}.green{color:var(--green)}.red{color:var(--red)}.section{font-size:17px;font-weight:800;margin:18px 2px 10px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.small{font-size:12px;color:var(--muted)}
+button,input,select{font:inherit}button{border:0;border-radius:12px;padding:11px 14px;background:var(--blue);color:white;font-weight:700;cursor:pointer}.secondary{background:#eef3fb;color:#294568}.danger{background:#fff0f1;color:var(--red)}.full{width:100%}
+input,select{width:100%;padding:12px;border:1px solid #dce4ee;border-radius:12px;background:white;color:var(--ink);outline:none}input:focus,select:focus{border-color:var(--blue)}label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:0 0 6px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:12px}.wide{grid-column:1/-1}
+.list{display:flex;flex-direction:column;gap:8px}.item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.bubble{width:38px;height:38px;border-radius:13px;background:#edf3ff;display:grid;place-items:center;font-size:18px;flex-shrink:0}.itemmain{flex:1;min-width:0}.itemtitle{font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.itemmeta{font-size:12px;color:var(--muted);margin-top:3px}.amount{font-weight:800;white-space:nowrap}.delete{background:transparent;color:#a0aaba;padding:6px 8px;font-size:18px}
+.barline{height:9px;background:#edf1f6;border-radius:99px;overflow:hidden;margin:8px 0 12px}.barfill{height:100%;background:var(--blue);border-radius:99px}.budgetrow{margin:12px 0}.budgetrow .row{font-size:13px}
+canvas{width:100%;height:190px;display:block}.empty{text-align:center;color:var(--muted);padding:24px 8px}
+.notice{background:#fff8e6;border:1px solid #f3dfab;color:#725a1a;padding:12px;border-radius:14px;font-size:12px;line-height:1.5;margin-bottom:12px}
+.hidden{display:none!important}
+footer{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px max(14px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:5}
+footer .footinner{max-width:920px;width:100%;display:flex;justify-content:space-between;gap:10px;align-items:center}.footnote{font-size:11px;color:var(--muted)}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.value{font-size:25px}.contentcols{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}.contentcols .card{height:fit-content}}
+@media(max-width:420px){.formgrid{grid-template-columns:1fr}.wide{grid-column:auto}.value{font-size:20px}.card{padding:13px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div><div class="brand">💰 My Finance LK</div><div class="sub">Your money, clearly tracked · LKR</div></div><button id="addTop">＋ Add</button></div></header>
+<main>
+<div class="tabs" id="tabs">
+<button class="tab active" data-page="dashboard">Overview</button><button class="tab" data-page="transactions">Transactions</button><button class="tab" data-page="reports">Reports</button><button class="tab" data-page="settings">Backup</button>
+</div>
+<section id="dashboard">
+<div class="grid">
+<div class="card"><div class="label">This month's income</div><div class="value green" id="dashIncome">Rs. 0</div></div>
+<div class="card"><div class="label">This month's expenses</div><div class="value red" id="dashExpense">Rs. 0</div></div>
+<div class="card"><div class="label">Net cash flow</div><div class="value" id="dashNet">Rs. 0</div></div>
+<div class="card"><div class="label">Savings rate</div><div class="value" id="dashRate">0%</div></div>
+</div>
+<div class="contentcols">
+<div>
+<div class="section">Spending by category</div><div class="card"><canvas id="categoryChart" width="600" height="220"></canvas><div id="categoryLegend"></div></div>
+<div class="section">Recent transactions</div><div class="card"><div class="list" id="recentList"></div></div>
+</div>
+<div>
+<div class="section">Monthly budget</div><div class="card"><div class="field"><label>Set monthly expense limit (LKR)</label><input id="budgetInput" type="number" min="0" placeholder="e.g. 45000"></div><button class="full" id="saveBudget">Save budget</button><div id="budgetView"></div></div>
+<div class="section">Quick add</div><div class="card"><button class="full" id="quickExpense">＋ Add expense</button><button class="full secondary" style="margin-top:8px" id="quickIncome">＋ Add income</button></div>
+</div>
+</div>
+</section>
+<section id="transactions" class="hidden">
+<div class="section">Record money in or out</div>
+<div class="card">
+<form id="txForm">
+<div class="formgrid">
+<div class="field"><label>Type</label><select id="txType"><option value="expense">Expense</option><option value="income">Income</option></select></div>
+<div class="field"><label>Amount (LKR)</label><input id="txAmount" type="number" min="1" step="0.01" required placeholder="0.00"></div>
+<div class="field"><label>Category</label><select id="txCategory"></select></div>
+<div class="field"><label>Date</label><input id="txDate" type="date" required></div>
+<div class="field wide"><label>Description</label><input id="txNote" maxlength="100" placeholder="e.g. Lunch, salary, fuel"></div>
+<div class="field wide"><label>Account (optional)</label><select id="txAccount"><option value="">Not specified</option><option>Cash</option><option>People's Bank</option><option>Sampath Bank</option><option>Commercial Bank</option><option>Other bank</option><option>Credit card</option></select></div>
+</div>
+<button class="full" type="submit">Save transaction</button>
+</form></div>
+<div class="section">All transactions</div>
+<div class="card">
+<div class="formgrid">
+<div class="field"><label>Month</label><input id="filterMonth" type="month"></div>
+<div class="field"><label>Type</label><select id="filterType"><option value="all">All</option><option value="expense">Expenses</option><option value="income">Income</option></select></div>
+</div>
+<div class="row" style="margin-bottom:10px"><span class="small" id="txCount">0 records</span><button class="secondary" id="clearFilter">Clear filters</button></div>
+<div class="list" id="txList"></div>
+</div>
+</section>
+<section id="reports" class="hidden">
+<div class="section">Monthly & annual reports</div>
+<div class="card">
+<div class="formgrid">
+<div class="field"><label>Report period</label><select id="reportMode"><option value="month">Monthly</option><option value="year">Annual</option></select></div>
+<div class="field"><label>Select period</label><input id="reportPeriod" type="month"></div>
+</div>
+<div class="grid">
+<div class="card"><div class="label">Income</div><div class="value green" id="rIncome">Rs. 0</div></div>
+<div class="card"><div class="label">Expenses</div><div class="value red" id="rExpense">Rs. 0</div></div>
+<div class="card"><div class="label">Net savings</div><div class="value" id="rNet">Rs. 0</div></div>
+<div class="card"><div class="label">Savings rate</div><div class="value" id="rRate">0%</div></div>
+</div>
+<div class="section">Expense categories</div><div id="reportCategories"></div>
+<div class="section">Month-by-month</div><div id="yearMonths"></div>
+<div class="row" style="margin-top:14px"><button id="exportReport" class="secondary">Export report CSV</button><button id="printReport">Print / Save PDF</button></div>
+</div>
+</section>
+<section id="settings" class="hidden">
+<div class="section">Backup & data</div>
+<div class="notice">Your entries are saved in this browser on this device. This starter app does not connect to your bank and does not automatically sync between devices. Export a backup regularly.</div>
+<div class="card"><div class="section" style="margin-top:0">Export backup</div><p class="small">Download all transactions and your budget as a JSON backup.</p><button class="full" id="backupBtn">Download backup</button></div>
+<div class="card"><div class="section" style="margin-top:0">Restore backup</div><input id="restoreFile" type="file" accept="application/json,.json"><button class="full secondary" style="margin-top:10px" id="restoreBtn">Restore selected backup</button></div>
+<div class="card"><div class="section" style="margin-top:0">Clear all data</div><p class="small">This permanently deletes data saved in this browser. Export a backup first.</p><button class="full danger" id="clearAll">Delete all transactions</button></div>
+</section>
+</main>
+<footer><div class="footinner"><span class="footnote">Private local tracker · LKR</span><button id="footerAdd">＋ Add transaction</button></div></footer>
+<div id="modal" class="hidden" style="position:fixed;inset:0;background:#09152580;z-index:10;padding:20px;display:flex;align-items:center;justify-content:center">
+<div class="card" style="max-width:420px;width:100%;margin:0">
+<div class="row"><div class="section" style="margin:0 0 12px">Add transaction</div><button class="secondary" id="closeModal">✕</button></div>
+<p class="small">Choose income or expense, enter the amount, then save it in the Transactions tab.</p><button class="full" id="modalExpense">Add expense</button><button class="full secondary" style="margin-top:8px" id="modalIncome">Add income</button>
+</div></div>
+<script>
+const $=id=>document.getElementById(id);
+const today=new Date(); const localDate=d=>{let x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,10)};
+const monthNow=localDate(today).slice(0,7);
+let state={transactions:[],budget:45000};
+const expenseCats=["Food & drinks","Transport","Bills & utilities","Shopping","Family","Health","Education","Entertainment","Housing","Travel","Other"];
+const incomeCats=["Salary","Allowance","Investment income","Business","Gift","Other"];
+const fmt=n=>"Rs. "+Number(n||0).toLocaleString("en-LK",{maximumFractionDigits:2});
+const monthOf=d=>String(d||"").slice(0,7);
+const yearOf=d=>String(d||"").slice(0,4);
+const read=()=>{try{let s=JSON.parse(localStorage.getItem("myFinanceLK")||"{}");state={transactions:Array.isArray(s.transactions)?s.transactions:[],budget:Number(s.budget)||45000}}catch(e){}};
+const save=()=>localStorage.setItem("myFinanceLK",JSON.stringify(state));
+const sums=(arr)=>({income:arr.filter(t=>t.type==="income").reduce((a,t)=>a+Number(t.amount),0),expense:arr.filter(t=>t.type==="expense").reduce((a,t)=>a+Number(t.amount),0)});
+const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function setCats(){let cats=$("txType").value==="income"?incomeCats:expenseCats;$("txCategory").innerHTML=cats.map(c=>`<option>${esc(c)}</option>`).join("")}
+function showPage(page){document.querySelectorAll("section").forEach(s=>s.classList.toggle("hidden",s.id!==page));document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.page===page));if(page==="reports")renderReport();if(page==="transactions")renderTransactions();window.scrollTo(0,0)}
+function addForm(type){showPage("transactions");$("txType").value=type;setCats();$("txAmount").focus();$("txDate").value=localDate(new Date())}
+function makeItem(t,withDelete=true){let emoji=t.type==="income"?"↙":"↗";let sign=t.type==="income"?"+":"−";return `<div class="item"><div class="bubble">${emoji}</div><div class="itemmain"><div class="itemtitle">${esc(t.note||t.category)}</div><div class="itemmeta">${esc(t.category)} · ${esc(t.date)}${t.account?" · "+esc(t.account):""}</div></div><div class="amount ${t.type==="income"?"green":"red"}">${sign}${fmt(t.amount).replace("Rs. ","")}</div>${withDelete?`<button class="delete" title="Delete" data-del="${t.id}">×</button>`:""}</div>`}
+function renderDashboard(){let arr=state.transactions.filter(t=>monthOf(t.date)===monthNow),s=sums(arr),net=s.income-s.expense;$("dashIncome").textContent=fmt(s.income);$("dashExpense").textContent=fmt(s.expense);$("dashNet").textContent=fmt(net);$("dashNet").className="value "+(net>=0?"green":"red");$("dashRate").textContent=(s.income?Math.round(net/s.income*100):0)+"%";$("budgetInput").value=state.budget;
+let pct=state.budget?Math.min(100,s.expense/state.budget*100):0;$("budgetView").innerHTML=`<div class="budgetrow"><div class="row"><span>Spent ${fmt(s.expense)}</span><b>${Math.round(pct)}%</b></div><div class="barline"><div class="barfill" style="width:${pct}%"></div></div><div class="small">${fmt(Math.max(0,state.budget-s.expense))} remaining</div></div>`;
+let by={};arr.filter(t=>t.type==="expense").forEach(t=>by[t.category]=(by[t.category]||0)+Number(t.amount));drawPie(by);$("recentList").innerHTML=state.transactions.slice().sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id).slice(0,6).map(t=>makeItem(t,false)).join("")||'<div class="empty">No transactions yet. Add your first expense.</div>'}
+function drawPie(by){let c=$("categoryChart"),ctx=c.getContext("2d"),dpr=window.devicePixelRatio||1,w=c.clientWidth||300,h=190;c.width=w*dpr;c.height=h*dpr;ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);let entries=Object.entries(by).sort((a,b)=>b[1]-a[1]);let total=entries.reduce((a,x)=>a+x[1],0);if(!total){ctx.fillStyle="#8b98a8";ctx.font="14px system-ui";ctx.textAlign="center";ctx.fillText("Add expenses to see your chart",w/2,h/2);$("categoryLegend").innerHTML="";return}let colors=["#316fe8","#22a06b","#f1a33c","#8b5cf6","#e45a6f","#16a6b5","#64748b","#c084fc"];let start=-Math.PI/2;entries.forEach((e,i)=>{let end=start+e[1]/total*Math.PI*2;ctx.beginPath();ctx.moveTo(w/2,h/2);ctx.arc(w/2,h/2,Math.min(h/2-6,w/2-6),start,end);ctx.closePath();ctx.fillStyle=colors[i%colors.length];ctx.fill();start=end});$("categoryLegend").innerHTML=entries.slice(0,6).map((e,i)=>`<div class="row small" style="margin:7px 0"><span><span style="display:inline-block;width:9px;height:9px;border-radius:3px;background:${colors[i%colors.length]};margin-right:7px"></span>${esc(e[0])}</span><b>${fmt(e[1])}</b></div>`).join("")}
+function renderTransactions(){let m=$("filterMonth").value,t=$("filterType").value;let arr=state.transactions.filter(x=>(!m||monthOf(x.date)===m)&&(t==="all"||x.type===t)).sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);$("txCount").textContent=arr.length+" records";$("txList").innerHTML=arr.map(x=>makeItem(x)).join("")||'<div class="empty">No transactions for this filter.</div>'}
+function reportArray(){let mode=$("reportMode").value,period=$("reportPeriod").value||monthNow;return state.transactions.filter(t=>mode==="month"?monthOf(t.date)===period:yearOf(t.date)===period.slice(0,4))}
+function renderReport(){let mode=$("reportMode").value,period=$("reportPeriod").value||monthNow,arr=reportArray(),s=sums(arr),net=s.income-s.expense;$("rIncome").textContent=fmt(s.income);$("rExpense").textContent=fmt(s.expense);$("rNet").textContent=fmt(net);$("rNet").className="value "+(net>=0?"green":"red");$("rRate").textContent=(s.income?Math.round(net/s.income*100):0)+"%";
+let by={};arr.filter(t=>t.type==="expense").forEach(t=>by[t.category]=(by[t.category]||0)+Number(t.amount));let total=Object.values(by).reduce((a,b)=>a+b,0);$("reportCategories").innerHTML=Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="budgetrow"><div class="row"><span>${esc(k)}</span><b>${fmt(v)}</b></div><div class="barline"><div class="barfill" style="width:${total?v/total*100:0}%"></div></div></div>`).join("")||'<div class="small">No expense records for this period.</div>';
+let yr=mode==="year"?period.slice(0,4):period.slice(0,4);$("yearMonths").innerHTML=Array.from({length:12},(_,i)=>{let m=yr+"-"+String(i+1).padStart(2,"0"),a=state.transactions.filter(t=>monthOf(t.date)===m),x=sums(a),n=x.income-x.expense;return `<div class="item"><div class="itemmain"><div class="itemtitle">${new Date(Number(yr),i,1).toLocaleString("en-US",{month:"long"})}</div><div class="itemmeta">Income ${fmt(x.income)} · Expenses ${fmt(x.expense)}</div></div><div class="amount ${n>=0?"green":"red"}">${fmt(n)}</div></div>`}).join("")}
+function download(name,content,type){let blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function csvCell(v){return '"'+String(v??"").replace(/"/g,'""')+'"'}
+function exportCSV(){let mode=$("reportMode").value,period=$("reportPeriod").value||monthNow,arr=reportArray(),s=sums(arr);let rows=[["Report",mode==="month"?"Monthly":"Annual"],["Period",period],["Income",s.income],["Expenses",s.expense],["Net savings",s.income-s.expense],[],["Date","Type","Amount LKR","Category","Description","Account"],...arr.map(t=>[t.date,t.type,t.amount,t.category,t.note,t.account])];download("My-Finance-LK-"+period+".csv","\ufeff"+rows.map(r=>r.map(csvCell).join(",")).join("\n"),"text/csv;charset=utf-8")}
+function backup(){download("My-Finance-LK-backup.json",JSON.stringify(state,null,2),"application/json")}
+function openModal(){$("modal").classList.remove("hidden");$("modal").style.display="flex"}
+function closeModal(){$("modal").classList.add("hidden");$("modal").style.display="none"}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+$("addTop").onclick=openModal;$("footerAdd").onclick=openModal;$("closeModal").onclick=closeModal;$("modal").onclick=e=>{if(e.target===$("modal"))closeModal()};
+$("modalExpense").onclick=()=>{closeModal();addForm("expense")};$("modalIncome").onclick=()=>{closeModal();addForm("income")};$("quickExpense").onclick=()=>addForm("expense");$("quickIncome").onclick=()=>addForm("income");
+$("txType").onchange=setCats;$("txForm").onsubmit=e=>{e.preventDefault();let amount=Number($("txAmount").value);if(!(amount>0))return;state.transactions.push({id:Date.now(),type:$("txType").value,amount,category:$("txCategory").value,date:$("txDate").value,note:$("txNote").value.trim(),account:$("txAccount").value});save();$("txAmount").value="";$("txNote").value="";renderAll();alert("Transaction saved.")};
+document.addEventListener("click",e=>{let b=e.target.closest("[data-del]");if(b&&confirm("Delete this transaction?")){state.transactions=state.transactions.filter(t=>String(t.id)!==b.dataset.del);save();renderAll()}});
+$("filterMonth").onchange=renderTransactions;$("filterType").onchange=renderTransactions;$("clearFilter").onclick=()=>{$("filterMonth").value="";$("filterType").value="all";renderTransactions()};
+$("saveBudget").onclick=()=>{state.budget=Math.max(0,Number($("budgetInput").value)||0);save();renderDashboard();alert("Budget saved.")};
+$("reportMode").onchange=()=>{if($("reportMode").value==="year"){$("reportPeriod").type="number";$("reportPeriod").min="2000";$("reportPeriod").max="2100";$("reportPeriod").value=yearOf($("reportPeriod").value||monthNow)}else{$("reportPeriod").type="month";$("reportPeriod").value=monthNow}renderReport()};
+$("reportPeriod").onchange=renderReport;$("exportReport").onclick=exportCSV;$("printReport").onclick=()=>window.print();$("backupBtn").onclick=backup;
+$("restoreBtn").onclick=()=>{let f=$("restoreFile").files[0];if(!f)return alert("Select a backup file first.");let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!Array.isArray(x.transactions))throw 0;if(confirm("Replace current data with this backup?")){state={transactions:x.transactions,budget:Number(x.budget)||45000};save();renderAll();alert("Backup restored.")}}catch(e){alert("This backup file is not valid.")}};r.readAsText(f)};
+$("clearAll").onclick=()=>{if(confirm("Delete all transactions and budget data from this browser?")){state={transactions:[],budget:45000};save();renderAll()}};
+function renderAll(){renderDashboard();renderTransactions();renderReport()}
+read();$("txDate").value=localDate(today);$("filterMonth").value=monthNow;$("reportPeriod").value=monthNow;setCats();renderAll();
+window.addEventListener("resize",()=>drawPie(Object.fromEntries((()=>{let by={};state.transactions.filter(t=>monthOf(t.date)===monthNow&&t.type==="expense").forEach(t=>by[t.category]=(by[t.category]||0)+Number(t.amount));return Object.entries(by)})())));
+</script>
+</body></html>
